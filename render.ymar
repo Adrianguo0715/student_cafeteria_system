@@ -1,0 +1,10 @@
+services:
+  - name: student-cafeteria
+    type: web
+    env: php
+    plan: free
+    buildCommand: "" # PHP 應用無需特別的 Build 步驟
+    startCommand: "" # Render 會自動啟動 PHP 應用，無需自定義
+    repo: https://github.com/your_username/studentCafeteria
+    branch: main
+    rootDir: / # 預設為專案根目錄
