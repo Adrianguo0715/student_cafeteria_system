@@ -3,8 +3,8 @@ services:
     type: web
     env: php
     plan: free
-    buildCommand: "" # PHP 應用無需特別的 Build 步驟
-    startCommand: "" # Render 會自動啟動 PHP 應用，無需自定義
+    buildCommand: "" # PHP 無需編譯
+    startCommand: "" # 預設使用 PHP 運行 index.php
     repo: https://github.com/your_username/studentCafeteria
     branch: main
-    rootDir: / # 預設為專案根目錄
+    rootDir: / # 根目錄
