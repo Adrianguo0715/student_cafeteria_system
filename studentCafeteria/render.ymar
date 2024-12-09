@@ -5,6 +5,6 @@ services:
     plan: free
     buildCommand: "" # PHP 無需編譯
     startCommand: "" # 預設使用 PHP 運行 index.php
-    repo: https://github.com/your_username/studentCafeteria
+    repo: https://github.com/Adrianguo0715/student_cafeteria_system
     branch: main
     rootDir: / # 根目錄
