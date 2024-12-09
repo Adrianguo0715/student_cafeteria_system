@@ -1,0 +1,17 @@
+# 忽略資料庫連線設定
+db_connect.php
+
+# 忽略圖片文件夾中的檔案
+images/
+
+# 忽略臨時檔案
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# IDE 設定檔
+.vscode/
+.idea/
