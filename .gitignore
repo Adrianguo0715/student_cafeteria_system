@@ -1,5 +1,5 @@
 # 忽略資料庫連線設定
-db_connect.php
+# db_connect.php
 
 # 忽略圖片文件夾中的檔案
 images/
