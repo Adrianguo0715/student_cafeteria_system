@@ -1,0 +1,87 @@
+CREATE TABLE store_list (
+    store_id INT AUTO_INCREMENT PRIMARY KEY,
+    store_name VARCHAR(255) NOT NULL,
+    location ENUM('一餐', '三餐', '教餐') NOT NULL,
+    opening_hours VARCHAR(50) NOT NULL,
+    UNIQUE (store_name, location) -- 確保相同名稱的店家不會重複出現在同一位置
+);
+
+CREATE TABLE menu_items (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    item_name VARCHAR(255) NOT NULL,
+    category ENUM('飯', '麵', '火鍋', '飲料', '素食', '其他') NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    store_id INT NOT NULL,
+    UNIQUE (item_name, category, store_id), -- 確保同店家內的菜品唯一
+    FOREIGN KEY (store_id) REFERENCES store_list(store_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE staff (
+    staff_id INT AUTO_INCREMENT PRIMARY KEY,
+    store_id INT NOT NULL,
+    staff_name VARCHAR(255) NOT NULL,
+    department VARCHAR(255) NOT NULL,
+    grade ENUM('大一', '大二', '大三', '大四', '碩士', '博士') NOT NULL,
+    UNIQUE (store_id, staff_name), -- 確保每家店不會有同名的員工
+    FOREIGN KEY (store_id) REFERENCES store_list(store_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE owners (
+    owner_id INT AUTO_INCREMENT PRIMARY KEY,
+    store_id INT NOT NULL,
+    owner_name VARCHAR(255) NOT NULL,
+    owner_phone VARCHAR(20) NOT NULL,
+    owner_email VARCHAR(255) NOT NULL,
+    UNIQUE (store_id), -- 確保每個店家只有一位店主
+    UNIQUE (owner_phone), -- 確保電話號碼唯一
+    UNIQUE (owner_email), -- 確保電子郵件唯一
+    FOREIGN KEY (store_id) REFERENCES store_list(store_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE feedback (
+    feedback_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(255) NOT NULL,
+    store_id INT NOT NULL,
+    item_id INT NOT NULL,
+    feedback_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    feedback_content TEXT NOT NULL,
+    UNIQUE (customer_name, store_id, item_id, feedback_time), -- 確保同一顧客對同一店家和品項的評論唯一
+    FOREIGN KEY (store_id) REFERENCES store_list(store_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (item_id) REFERENCES menu_items(item_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    store_id INT NOT NULL,
+    staff_id INT,
+    order_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    customer_name VARCHAR(255) NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    UNIQUE (store_id, customer_name, order_time), -- 確保同店家同顧客不會在同一時間下兩單
+    FOREIGN KEY (store_id) REFERENCES store_list(store_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    user_role ENUM('store_owner', 'admin') NOT NULL,
+    store_id INT NULL, -- 對應的店家ID，管理者為NULL
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (store_id) REFERENCES store_list(store_id) ON DELETE SET NULL -- 如果店家被刪除，對應的user store_id會變為NULL
+);
